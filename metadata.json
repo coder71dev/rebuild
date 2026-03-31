@@ -1,0 +1,5 @@
+{
+  "name": "React Page Builder",
+  "description": "A visual page builder with live editing, similar to Shopify or Puck, designed to be integrated into a Laravel Inertia application.",
+  "requestFramePermissions": []
+}
