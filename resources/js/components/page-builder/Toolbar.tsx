@@ -10,6 +10,8 @@ interface Notification {
 
 interface ToolbarProps {
   publishUrl: string;
+  publishMethod?: 'post' | 'put';
+  initialTitle?: string;
 }
 
 // Simple SVG icons for viewport toggles
@@ -47,12 +49,13 @@ const VIEWPORT_BUTTONS: { viewport: Viewport; label: string; Icon: React.FC }[] 
   { viewport: 'desktop', label: 'Desktop', Icon: DesktopIcon },
 ];
 
-export function Toolbar({ publishUrl }: ToolbarProps) {
+export function Toolbar({ publishUrl, publishMethod = 'post', initialTitle = 'Untitled Page' }: ToolbarProps) {
   const viewport = usePageStore((s) => s.viewport);
   const setViewport = usePageStore((s) => s.setViewport);
   const [isPublishing, setIsPublishing] = useState(false);
   const [notification, setNotification] = useState<Notification | null>(null);
   const dismissTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [title, setTitle] = useState(initialTitle);
 
   // Auto-dismiss notification after 3 seconds
   useEffect(() => {
@@ -82,7 +85,7 @@ export function Toolbar({ publishUrl }: ToolbarProps) {
     setIsPublishing(true);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    router.post(publishUrl, schema as any, {
+    router[publishMethod](publishUrl, { schema, title } as any, {
       onSuccess: () => {
         setIsPublishing(false);
         showNotification('success', 'Page published successfully.');
@@ -198,8 +201,30 @@ export function Toolbar({ publishUrl }: ToolbarProps) {
           ↪ Redo
         </button>
 
-        {/* Spacer */}
-        <div style={{ flex: 1 }} />
+        {/* Title Input */}
+        <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Page Title"
+            style={{
+              padding: '4px 8px',
+              border: '1px solid transparent',
+              borderRadius: '4px',
+              fontSize: '14px',
+              fontWeight: 500,
+              color: '#111827',
+              background: 'transparent',
+              outline: 'none',
+              textAlign: 'center',
+              width: '200px',
+              transition: 'border-color 0.15s ease',
+            }}
+            onFocus={(e) => (e.target.style.borderColor = '#d1d5db')}
+            onBlur={(e) => (e.target.style.borderColor = 'transparent')}
+          />
+        </div>
 
         {/* Publish */}
         <button

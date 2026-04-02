@@ -8,11 +8,13 @@ import type { PageSchema } from './types';
 
 export interface PageBuilderProps {
   initialSchema?: PageSchema;
+  initialTitle?: string;
   publishUrl: string;
+  publishMethod?: 'post' | 'put';
   aiSuggestUrl: string;
 }
 
-export function PageBuilder({ initialSchema, publishUrl, aiSuggestUrl }: PageBuilderProps) {
+export function PageBuilder({ initialSchema, initialTitle, publishUrl, publishMethod, aiSuggestUrl }: PageBuilderProps) {
   const addSection = usePageStore((s) => s.addSection);
   const viewport = usePageStore((s) => s.viewport);
 
@@ -55,7 +57,11 @@ export function PageBuilder({ initialSchema, publishUrl, aiSuggestUrl }: PageBui
         overflow: 'hidden',
       }}
     >
-      <Toolbar publishUrl={publishUrl} />
+      <Toolbar 
+        publishUrl={publishUrl} 
+        publishMethod={publishMethod} 
+        initialTitle={initialTitle}
+      />
 
       {/* Three-panel layout */}
       <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>

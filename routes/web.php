@@ -1,12 +1,12 @@
 <?php
 
 use App\Http\Controllers\AISuggestController;
-use App\Http\Controllers\PageBuilderController;
+use App\Http\Controllers\PageController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return inertia('PageBuilder');
+    return redirect()->route('pages.index');
 });
 
-Route::post('/pages/publish', [PageBuilderController::class, 'publish'])->name('pages.publish');
+Route::resource('pages', PageController::class);
 Route::post('/ai/suggest', [AISuggestController::class, 'suggest'])->name('ai.suggest');
